@@ -16,7 +16,7 @@
 				<input
 					type="password"
 					class="form-control"
-					v-model="passowrd"
+					v-model="password"
 					placeholder="Enter password"
 				/>
 			</div>
@@ -31,6 +31,8 @@ export default {
 	name: "Login",
 	data() {
 		return {
+			email: "",
+			password: "",
 			user: {
 				email: "",
 				password: "",
@@ -40,14 +42,16 @@ export default {
 	methods: {
 		async handleLogin() {
 			const loginUser = {
-				email: this.user.email,
-				password: this.user.password,
+				email: this.email,
+				password: this.password,
 			};
 			const response = await axios.post("login", loginUser);
 			if (response?.data?.status !== "success") {
 				alert("Email or password is incorrect");
 				return;
 			} else {
+				localStorage.setItem("token", response.data.token);
+				this.$store.dispatch("user", response.data);
 				this.$router.push("/home");
 			}
 		},

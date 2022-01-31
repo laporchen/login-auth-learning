@@ -1,19 +1,48 @@
 <template>
-  <div id="nav">
-    <nav class="navbar navbar-expand navbar-light fixed-top">
-      <div class="container">
-        <a class="navbar-brand" href="/">Hello</a>
-        <div class="collapse navbar-collapse">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item"><a href="/login" class="nav-link">Login</a></li>
-            <li class="nav-item"><a href="/register" class="nav-link">Register</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </div>
+	<div id="nav">
+		<nav class="navbar navbar-expand navbar-light fixed-top">
+			<div class="container">
+				<router-link class="navbar-brand" to="/">Hello</router-link>
+				<div class="collapse navbar-collapse">
+					<ul v-if="!user" class="navbar-nav ms-auto">
+						<li class="nav-item">
+							<router-link to="/login" class="nav-link">Login</router-link>
+						</li>
+						<li class="nav-item">
+							<router-link to="/register" class="nav-link"
+								>Register</router-link
+							>
+						</li>
+					</ul>
+					<ul v-if="user" class="navbar-nav ms-auto">
+						<li class="nav-item">
+							<router-link
+								to="/login"
+								class="nav-link"
+								@click="logoutHandle"
+								>Logout</router-link
+							>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
 </template>
 
 <script>
-export default { name: "Nav" };
+import { mapGetters } from "vuex";
+export default {
+	name: "Nav",
+	methods: {
+		logoutHandle() {
+			localStorage.removeItem("token");
+			this.$store.dispatch("user", null);
+			this.$router.push("/login");
+		},
+	},
+	computed: {
+		...mapGetters(["user"]),
+	},
+};
 </script>

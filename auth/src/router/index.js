@@ -3,7 +3,8 @@ import Home from '../components/Home.vue'
 const routes = [
   {
     path: '/',
-    component: Home
+    component: Home,
+    alias: '/home'
   },
   {
     path: '/login',
