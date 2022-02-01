@@ -48,6 +48,7 @@ def login():
             else:
                 message['status'] = "fail"
                 message['message'] = "Wrong email or password"
+                message['tasks'] = data[post_data['email']]['tasks']
         except Exception as err:
             message = {"status": "error", "message": "Error in login"}
 
@@ -96,13 +97,37 @@ def returnUser():
             f.close()
             current_user = get_jwt_identity()
             message = {"status": "success",
-                       "name": data[current_user]['firstname'] + " " + data[current_user]['lastname'], "email": current_user}
+                       "name": data[current_user]['firstname'] + " " + data[current_user]['lastname'], "email": current_user, "tasks": data[current_user]['tasks']}
             return jsonify(message)
         except Exception:
             print(traceback.format_exc())
             message = {"status": "failure",
                        "message": "Error in getting user info"}
             return jsonify(message)
+
+
+@app.route("/update", methods=['POST'])
+@jwt_required(optional=False)
+def update():
+    global data
+    if request.method == 'POST':
+        message = {"status": "success"}
+        post_data = request.get_json()
+        try:
+            f = open(dataLocation + "/" + dataName, "r")
+            data = json.load(f)
+            f.close()
+            current_user = get_jwt_identity()
+            data[current_user]['tasks'] = post_data
+            f = open(dataLocation + "/" + dataName, "w+")
+            f.write(json.dumps(data))
+            f.close()
+        except Exception:
+            print(traceback.format_exc())
+            message = {"status": "failure",
+                       "message": "Error in updating user info"}
+            return jsonify(message)
+        return jsonify(message)
 
 
 if __name__ == '__main__':

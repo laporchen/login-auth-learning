@@ -50,8 +50,9 @@ export default {
 				alert("Email or password is incorrect");
 				return;
 			} else {
-				localStorage.setItem("token", response.data.token);
+				await localStorage.setItem("token", response.data.token);
 				this.$store.dispatch("user", response.data);
+				this.$store.dispatch("todoList", response.data.todoList);
 				this.$router.push("/home");
 			}
 		},

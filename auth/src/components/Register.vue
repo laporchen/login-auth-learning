@@ -80,12 +80,12 @@ export default {
 				last_name: this.last_name,
 				email: this.email,
 				password: this.password,
+				tasks: [],
 			};
 			if (newUser.password !== this.password_confirmation) {
 				alert("Passwords do not match");
 				return;
 			}
-			console.log(newUser);
 			let response = await axios.post("register", newUser);
 			if (response?.data?.status !== "success") {
 				console.log(response);

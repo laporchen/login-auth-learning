@@ -26,6 +26,7 @@ export default {
 			this.$router.push("/login");
 		} else {
 			this.$store.dispatch("user", response?.data);
+			this.$store.dispatch("todoList", response?.data.tasks);
 		}
 	},
 };
@@ -38,7 +39,7 @@ export default {
 	box-sizing: border-box;
 }
 body {
-	background-color: #ff3458;
+	background-color: #5665a6;
 	min-height: 100vh;
 	display: flex;
 }
@@ -63,12 +64,14 @@ html,
 	text-align: left;
 }
 .auth-inner {
-	width: 450px;
+	height: 80%;
+	width: 600px;
 	margin: auto;
 	background-color: #fff;
 	box-shadow: 0px 14px 80px #ccc rgba(0, 0, 0, 0.5);
 	padding: 20px;
 	border-radius: 15px;
+	overflow: scroll;
 }
 .auth-wrapper .form-control:focus {
 	box-shadow: none;
