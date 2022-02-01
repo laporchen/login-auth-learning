@@ -25,8 +25,9 @@ export default {
 		if (response?.data?.status !== "success") {
 			this.$router.push("/login");
 		} else {
-			this.$store.dispatch("user", response?.data);
-			this.$store.dispatch("todoList", response?.data.tasks);
+			console.log(response);
+			await this.$store.dispatch("user", response?.data);
+			await this.$store.dispatch("todoList", response?.data.tasks);
 		}
 	},
 };
@@ -64,7 +65,7 @@ html,
 	text-align: left;
 }
 .auth-inner {
-	height: 80%;
+	max-height: 80%;
 	width: 600px;
 	margin: auto;
 	background-color: #fff;

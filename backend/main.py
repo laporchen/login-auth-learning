@@ -44,11 +44,10 @@ def login():
                     identity=post_data['email'])
                 message['name'] = data[post_data['email']]['firstname'] + \
                     " " + data[post_data['email']]['lastname']
-                print(message['name'])
+                message['tasks'] = data[post_data['email']]['tasks']
             else:
                 message['status'] = "fail"
                 message['message'] = "Wrong email or password"
-                message['tasks'] = data[post_data['email']]['tasks']
         except Exception as err:
             message = {"status": "error", "message": "Error in login"}
 
