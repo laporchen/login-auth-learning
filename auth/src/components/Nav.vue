@@ -2,7 +2,10 @@
 	<div id="nav">
 		<nav class="navbar navbar-expand navbar-light fixed-top">
 			<div class="container">
-				<router-link class="navbar-brand" to="/">Hello</router-link>
+				<router-link v-if="user" class="navbar-brand" to="/"
+					>Hello, {{ user?.name }}</router-link
+				>
+				<router-link v-else class="navbar-brand" to="/">Login first</router-link>
 				<div class="collapse navbar-collapse">
 					<ul v-if="!user" class="navbar-nav ms-auto">
 						<li class="nav-item">

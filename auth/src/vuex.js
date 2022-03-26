@@ -5,6 +5,7 @@ const store = createStore({
         return {
             user: null,
             todoList: [],
+            requestSuccess: false,
         }
     },
     getters: {
@@ -13,6 +14,9 @@ const store = createStore({
         },
         todoList: (state) => {
             return state.todoList
+        },
+        requestSuccess: (state) => {
+            return state.requestSuccess
         }
     },
     actions: {
@@ -25,9 +29,6 @@ const store = createStore({
         updateTodoList(context, todoList) {
             context.commit('updateTodoList', todoList)
         },
-        delTodoList(context, todoList, index) {
-            context.commit('delTodoList', todoList, index)
-        }
     },
     mutations: {
         user(state, user) {
@@ -38,12 +39,14 @@ const store = createStore({
         },
         async updateTodoList(state, todoList) {
             state.todoList = todoList;
-            await axios.post("/update", state.todoList);
+            const response = await axios.post("/update", state.todoList);
+            console.log(response)
+            if (response.data.success === 200) {
+                state.requestSuccess = true;
+            } else {
+                state.requestSuccess = false;
+            }
         },
-        async delTodoList(state, todoList) {
-            state.todoList = todoList;
-            await axios.post("/update", state.todoList);
-        }
     }
 });
 

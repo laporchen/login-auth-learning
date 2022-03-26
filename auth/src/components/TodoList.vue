@@ -1,37 +1,60 @@
 <template>
 	<div id="todo">
+		<input
+			type="text"
+			v-model="searchText"
+			placeholder="Search"
+			clas="fixedElement"
+		/>
 		<form @submit.prevent="handleSubmitNewTask">
-			<h2 v-if="!submitValid" style="color: red">{{ invalidError }}</h2>
-			<table class="table table-bordered mt-1 table">
+			<div class="tableFixHead">
+				<h2 v-if="!submitValid" style="color: red">{{ invalidError }}</h2>
+				<table class="table table-bordered mt-1 table">
+					<thead>
+						<tr>
+							<th scope="col" style="width: 30%">Task</th>
+							<th scope="col" style="width: 60%">Description</th>
+							<th scope="col" style="width: 5%"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(task, index) in getterTodoList" :key="index">
+							<template
+								v-if="
+									task.name
+										.toLowerCase()
+										.indexOf(searchText.toLowerCase()) >= 0 ||
+									task.description
+										.toLowerCase()
+										.indexOf(searchText.toLowerCase()) >= 0
+								"
+							>
+								<th>
+									<span
+										@click="taskMarkOff(index)"
+										:class="{ taskDone: task.done }"
+										>{{ task.name }}</span
+									>
+								</th>
+								<th>
+									<div @click="editDescription(index)">
+										<span>{{ task.description }}&nbsp;</span>
+									</div>
+								</th>
+								<th @click="deleteTask(index)">
+									<div>
+										<span class="fa fa-trash"></span>
+									</div>
+								</th>
+							</template>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<table>
 				<thead>
 					<tr>
-						<th scope="col" style="width: 30%">Task</th>
-						<th scope="col" style="width: 60%">Description</th>
-						<th scope="col" style="width: 5%"></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="(task, index) in getterTodoList" :key="index">
-						<th>
-							<span
-								@click="taskMarkOff(index)"
-								:class="{ taskDone: task.done }"
-								>{{ task.name }}</span
-							>
-						</th>
-						<th>
-							<div @click="editDescription(index)">
-								<span>{{ task.description }}&nbsp;</span>
-							</div>
-						</th>
-						<th @click="deleteTask(index)">
-							<div>
-								<span class="fa fa-trash"></span>
-							</div>
-						</th>
-					</tr>
-					<tr>
-						<th>
+						<th scope="col" style="width: 30%">
 							<input
 								type="text"
 								class="form-control"
@@ -40,7 +63,7 @@
 								required
 							/>
 						</th>
-						<th>
+						<th scope="col" style="width: 70%">
 							<input
 								type="text"
 								class="form-control"
@@ -49,7 +72,7 @@
 							/>
 						</th>
 					</tr>
-				</tbody>
+				</thead>
 			</table>
 			<button class="mt-1 btn btn-primary btn-block">Submit</button>
 		</form>
@@ -70,6 +93,7 @@ export default {
 			todoListData: [],
 			submitValid: true,
 			invalidError: "",
+			searchText: "",
 		};
 	},
 	methods: {
@@ -84,11 +108,11 @@ export default {
 			}
 			this.submitValid = true;
 			this.todoListData.push(JSON.parse(JSON.stringify(this.inputTask)));
-			this.$store.dispatch("updateTodoList", this.todoListData);
+			this.inputTask.name = "";
+			this.inputTask.description = "";
 		},
 		taskMarkOff(index) {
 			this.todoListData[index].done = !this.todoListData[index].done;
-			this.$store.dispatch("updateTodoList", this.todoListData);
 		},
 		editDescription(index) {
 			let newDesc = prompt(
@@ -97,15 +121,24 @@ export default {
 			);
 			if (newDesc === null) return;
 			this.todoListData[index].description = newDesc;
-			this.$store.dispatch("updateTodoList", this.todoListData);
 		},
 		deleteTask(index) {
 			this.todoListData.splice(index, 1);
-			this.$store.dispatch("updateTodoList", this.todoListData);
 		},
 	},
 	created() {
 		this.todoListData = this.$store.getters.todoList;
+	},
+	watch: {
+		todoListData: {
+			handler() {
+				if (!this.$store.getters.user) {
+					this.$router.push("/login");
+				}
+				this.$store.dispatch("updateTodoList", this.todoListData);
+			},
+			deep: true,
+		},
 	},
 	computed: {
 		...mapGetters({
@@ -121,5 +154,23 @@ export default {
 }
 table {
 	empty-cells: show;
+	overflow-y: scroll;
+}
+.tableFixHead {
+	overflow: auto;
+	height: 400px;
+}
+.tableFixHead thead th {
+	border: 1px solid #ddd;
+	background-color: #f2f2f2;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+}
+
+/* Just common table stuff. Really. */
+table {
+	border-collapse: collapse;
+	width: 100%;
 }
 </style>

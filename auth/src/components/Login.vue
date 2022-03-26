@@ -39,6 +39,11 @@ export default {
 			},
 		};
 	},
+	async created() {
+		if (this.$store.getters.user) {
+			this.$router.push("/");
+		}
+	},
 	methods: {
 		async handleLogin() {
 			const loginUser = {

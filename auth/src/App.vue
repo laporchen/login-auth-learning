@@ -2,9 +2,11 @@
 	<div id="app">
 		<Nav />
 
-		<div class="auth-wrapper">
-			<div class="auth-inner">
-				<router-view />
+		<div class="auth-wrapper container">
+			<div class="row">
+				<div class="auth-inner col-lg-6 col-md-6 col-sm-6">
+					<router-view />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -66,6 +68,7 @@ html,
 }
 .auth-inner {
 	max-height: 80%;
+	min-height: 400px;
 	width: 600px;
 	margin: auto;
 	background-color: #fff;
